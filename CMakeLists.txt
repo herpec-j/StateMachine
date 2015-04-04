@@ -26,7 +26,8 @@ set(StateMachine_HDRS
 source_group(Includes FILES ${StateMachine_HDRS})
 
 set(StateMachine_Private_HDRS
-	${PROJECT_SOURCE_DIR}/StateMachine/Includes/StateMachine/Private/Singleton.hpp)
+	${PROJECT_SOURCE_DIR}/StateMachine/Includes/StateMachine/Private/Singleton.hpp
+	${PROJECT_SOURCE_DIR}/StateMachine/Includes/StateMachine/Private/EmptyState.hpp)
 
 source_group(Includes\\Private FILES ${StateMachine_Private_HDRS})
 

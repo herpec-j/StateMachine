@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "StateMachine/State.hpp"
+#include "StateMachine/Private/EmptyState.hpp"
 
 namespace AO
 {
@@ -26,7 +27,7 @@ namespace AO
 
 			using ConstStatePtr = std::shared_ptr <const StateType>;
 
-			using EmptyState = EmptyState<Entity, Args...>;
+			using EmptyState = Private::EmptyState<Entity, Args...>;
 
 		private:
 			// Attributes
