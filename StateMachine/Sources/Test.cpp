@@ -117,7 +117,7 @@ struct NormalState2 : public Machine::StateType, public AO::StateMachine::Privat
 
 struct NormalState1 : public Machine::StateType, public AO::StateMachine::Private::Singleton<NormalState1>
 {
-	friend class Access;
+	friend Access;
 
 	virtual void enter(Machine::EntityPtr entity) override final
 	{
