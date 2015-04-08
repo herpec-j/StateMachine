@@ -7,54 +7,57 @@ namespace AO
 {
 	namespace StateMachine
 	{
-		namespace Private
+		inline namespace Version_1
 		{
-			template <class Class>
-			class Singleton
+			namespace Private
 			{
-			public:
-				// Static Methods
-				template <typename... Args>
-				static std::shared_ptr<Class> GetInstance(Args &&...args)
+				template <class Class>
+				class Singleton
 				{
-					if (!Singleton::Instance)
+				public:
+					// Static Methods
+					template <typename... Args>
+					static std::shared_ptr<Class> GetInstance(Args &&...args)
 					{
-						std::lock_guard<std::mutex> lock(Singleton::Mutex);
 						if (!Singleton::Instance)
 						{
-							Singleton::Instance.reset(new Class(std::forward<Args>(args)...));
+							std::lock_guard<std::mutex> lock(Singleton::Mutex);
+							if (!Singleton::Instance)
+							{
+								Singleton::Instance.reset(new Class(std::forward<Args>(args)...));
+							}
 						}
+						return Singleton::Instance;
 					}
-					return Singleton::Instance;
-				}
 
-			protected:
-				using Access = Singleton<Class>;
+				protected:
+					using Access = Singleton<Class>;
 
-				// Constructors
-				Singleton(void) = default;
+					// Constructors
+					Singleton(void) = default;
 
-				Singleton(const Singleton &) = default;
+					Singleton(const Singleton &) = default;
 
-				// Assignment operators
-				Singleton &operator=(const Singleton &) = default;
+					// Assignment operators
+					Singleton &operator=(const Singleton &) = default;
 
-				// Destructor
-				virtual ~Singleton(void) = default;
+					// Destructor
+					virtual ~Singleton(void) = default;
 
-			private:
+				private:
+					// Static attributes
+					static std::mutex Mutex;
+
+					static std::shared_ptr<Class> Instance;
+				};
+
 				// Static attributes
-				static std::mutex Mutex;
+				template <class Class>
+				std::mutex Singleton<Class>::Mutex;
 
-				static std::shared_ptr<Class> Instance;
-			};
-
-			// Static attributes
-			template <class Class>
-			std::mutex Singleton<Class>::Mutex;
-
-			template <class Class>
-			std::shared_ptr<Class> Singleton<Class>::Instance;
+				template <class Class>
+				std::shared_ptr<Class> Singleton<Class>::Instance;
+			}
 		}
 	}
 }

@@ -4,39 +4,42 @@ namespace AO
 {
 	namespace StateMachine
 	{
-		template <class Entity, typename... Args>
-		class StateMachine;
-
-		template <class Entity, typename... Args>
-		class State
+		inline namespace Version_1
 		{
-			friend class StateMachine<Entity, Args...>;
+			template <class Entity, typename... Args>
+			class StateMachine;
 
-		public:
-			using EntityType = Entity;
+			template <class Entity, typename... Args>
+			class State
+			{
+				friend class StateMachine<Entity, Args...>;
 
-			using EntityPtr = EntityType *;
+			public:
+				using EntityType = Entity;
 
-			using ConstEntityPtr = const EntityPtr;
+				using EntityPtr = EntityType *;
 
-			// Constructors
-			State(void) = default;
+				using ConstEntityPtr = const EntityPtr;
 
-			State(const State &) = delete;
+				// Constructors
+				State(void) = default;
 
-			// Assignment operators
-			State &operator=(const State &) = delete;
+				State(const State &) = delete;
 
-			// Destructor
-			virtual ~State(void) = default;
+				// Assignment operators
+				State &operator=(const State &) = delete;
 
-		protected:
-			// Methods
-			virtual void enter(EntityPtr entity) = 0;
+				// Destructor
+				virtual ~State(void) = default;
 
-			virtual void execute(EntityPtr entity, Args... args) = 0;
+			protected:
+				// Methods
+				virtual void enter(EntityPtr entity) = 0;
 
-			virtual void exit(EntityPtr entity) = 0;
-		};
+				virtual void execute(EntityPtr entity, Args... args) = 0;
+
+				virtual void exit(EntityPtr entity) = 0;
+			};
+		}
 	}
 }

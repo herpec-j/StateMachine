@@ -7,48 +7,51 @@ namespace AO
 {
 	namespace StateMachine
 	{
-		namespace Private
+		inline namespace Version_1
 		{
-			template <class Entity, typename... Args>
-			class EmptyState final : public State<Entity, Args...>, public Singleton < EmptyState<Entity, Args...> >
+			namespace Private
 			{
-				friend typename Singleton<EmptyState<Entity, Args...>>::Access;
-
-			public:
-				using EntityType = typename State<Entity, Args...>::EntityType;
-
-				using EntityPtr = typename State<Entity, Args...>::EntityPtr;
-
-				using ConstEntityPtr = typename State<Entity, Args...>::ConstEntityPtr;
-
-				// Destructor
-				~EmptyState(void) = default;
-
-			private:
-				// Constructors
-				EmptyState(void) = default;
-
-				EmptyState(const EmptyState &) = default;
-
-				// Assignment operators
-				EmptyState &operator=(const EmptyState &) = default;
-
-				// Inherited Methods
-				void enter(EntityPtr entity) override final
+				template <class Entity, typename... Args>
+				class EmptyState final : public State<Entity, Args...>, public Singleton < EmptyState<Entity, Args...> >
 				{
-					return;
-				}
+					friend typename Singleton<EmptyState<Entity, Args...>>::Access;
 
-				void execute(EntityPtr entity, Args... args) override final
-				{
-					return;
-				}
+				public:
+					using EntityType = typename State<Entity, Args...>::EntityType;
 
-				void exit(EntityPtr entity) override final
-				{
-					return;
-				}
-			};
+					using EntityPtr = typename State<Entity, Args...>::EntityPtr;
+
+					using ConstEntityPtr = typename State<Entity, Args...>::ConstEntityPtr;
+
+					// Destructor
+					~EmptyState(void) = default;
+
+				private:
+					// Constructors
+					EmptyState(void) = default;
+
+					EmptyState(const EmptyState &) = default;
+
+					// Assignment operators
+					EmptyState &operator=(const EmptyState &) = default;
+
+					// Inherited Methods
+					void enter(EntityPtr entity) override final
+					{
+						return;
+					}
+
+					void execute(EntityPtr entity, Args... args) override final
+					{
+						return;
+					}
+
+					void exit(EntityPtr entity) override final
+					{
+						return;
+					}
+				};
+			}
 		}
 	}
 }

@@ -11,206 +11,209 @@ namespace AO
 {
 	namespace StateMachine
 	{
-		template <class Entity, typename... Args>
-		class StateMachine
+		inline namespace Version_1
 		{
-		public:
-			using EntityType = Entity;
-
-			using EntityPtr = EntityType *;
-
-			using ConstEntityPtr = const EntityPtr;
-
-			using StateType = State < EntityType, Args... >;
-
-			using StatePtr = std::shared_ptr<StateType>;
-
-			using ConstStatePtr = std::shared_ptr <const StateType>;
-
-			using EmptyState = Private::EmptyState<Entity, Args...>;
-
-		private:
-			// Attributes
-			EntityPtr owner;
-
-			std::stack<StatePtr> states;
-
-			std::stack<StatePtr> globalStates;
-
-		public:
-			// Constructors
-			StateMachine(void) = delete;
-
-			StateMachine(EntityPtr owner)
-				: owner(owner), states(), globalStates()
+			template <class Entity, typename... Args>
+			class StateMachine
 			{
-				assert(owner && "Invalid owner");
-				states.push(EmptyState::GetInstance());
-				globalStates.push(EmptyState::GetInstance());
-			}
+			public:
+				using EntityType = Entity;
 
-			StateMachine(const StateMachine &) = delete;
+				using EntityPtr = EntityType *;
 
-			// Assignment operators
-			StateMachine &operator=(const StateMachine &) = delete;
+				using ConstEntityPtr = const EntityPtr;
 
-			// Destructor
-			virtual ~StateMachine(void) = default;
+				using StateType = State < EntityType, Args... >;
 
-			// Methods
-			EntityPtr getOwner(void)
-			{
-				return owner;
-			}
+				using StatePtr = std::shared_ptr<StateType>;
 
-			ConstEntityPtr getOwner(void) const
-			{
-				return owner;
-			}
+				using ConstStatePtr = std::shared_ptr <const StateType>;
 
-			StatePtr getCurrentState(void)
-			{
-				assert(!states.empty() && "Stack underflow");
-				return states.top();
-			}
+				using EmptyState = Private::EmptyState<Entity, Args...>;
 
-			ConstStatePtr getCurrentState(void) const
-			{
-				assert(!states.empty() && "Stack underflow");
-				return states.top();
-			}
+			private:
+				// Attributes
+				EntityPtr owner;
 
-			StatePtr getGlobalState(void)
-			{
-				assert(!globalStates.empty() && "Stack underflow");
-				return globalStates.top();
-			}
+				std::stack<StatePtr> states;
 
-			ConstStatePtr getGlobalState(void) const
-			{
-				assert(!globalStates.empty() && "Stack underflow");
-				return globalStates.top();
-			}
+				std::stack<StatePtr> globalStates;
 
-			void update(Args... args)
-			{
-				getGlobalState()->execute(owner, args...);
-				getCurrentState()->execute(owner, args...);
-			}
+			public:
+				// Constructors
+				StateMachine(void) = delete;
 
-			void changeState(StatePtr newState)
-			{
-				assert(newState && "Invalid state");
-				getCurrentState()->exit(owner);
-				states.pop();
-				states.push(newState);
-				getCurrentState()->enter(owner);
-			}
-
-			template <typename State, typename... StateArgs>
-			void changeState(StateArgs &&...args)
-			{
-				changeState(std::make_shared<State>(std::forward<StateArgs>(args)...));
-			}
-
-			void changeGlobalState(StatePtr newState)
-			{
-				assert(newState && "Invalid state");
-				getGlobalState()->exit(owner);
-				globalStates.pop();
-				globalStates.push(newState);
-				getGlobalState()->enter(owner);
-			}
-
-			template <typename State, typename... StateArgs>
-			void changeGlobalState(StateArgs &&...args)
-			{
-				changeGlobalState(std::make_shared<State>(std::forward<StateArgs>(args)...));
-			}
-
-			void addState(StatePtr newState)
-			{
-				assert(newState && "Invalid state");
-				getCurrentState()->exit(owner);
-				states.push(newState);
-				getCurrentState()->enter(owner);
-			}
-
-			template <typename State, typename... StateArgs>
-			void addState(StateArgs &&...args)
-			{
-				addState(std::make_shared<State>(std::forward<StateArgs>(args)...));
-			}
-
-			void addGlobalState(StatePtr newState)
-			{
-				assert(newState && "Invalid state");
-				getGlobalState()->exit(owner);
-				globalStates.push(newState);
-				getGlobalState()->enter(owner);
-			}
-
-			template <typename State, typename... StateArgs>
-			void addGlobalState(StateArgs &&...args)
-			{
-				addGlobalState(std::make_shared<State>(std::forward<StateArgs>(args)...));
-			}
-
-			void revertToPreviousState(std::size_t depth = 1)
-			{
-				assert(depth < states.size() && "Stack underflow");
-				getCurrentState()->exit(owner);
-				for (std::size_t i = 0; i < depth; ++i)
+				StateMachine(EntityPtr owner)
+					: owner(owner), states(), globalStates()
 				{
+					assert(owner && "Invalid owner");
+					states.push(EmptyState::GetInstance());
+					globalStates.push(EmptyState::GetInstance());
+				}
+
+				StateMachine(const StateMachine &) = delete;
+
+				// Assignment operators
+				StateMachine &operator=(const StateMachine &) = delete;
+
+				// Destructor
+				virtual ~StateMachine(void) = default;
+
+				// Methods
+				EntityPtr getOwner(void)
+				{
+					return owner;
+				}
+
+				ConstEntityPtr getOwner(void) const
+				{
+					return owner;
+				}
+
+				StatePtr getCurrentState(void)
+				{
+					assert(!states.empty() && "Stack underflow");
+					return states.top();
+				}
+
+				ConstStatePtr getCurrentState(void) const
+				{
+					assert(!states.empty() && "Stack underflow");
+					return states.top();
+				}
+
+				StatePtr getGlobalState(void)
+				{
+					assert(!globalStates.empty() && "Stack underflow");
+					return globalStates.top();
+				}
+
+				ConstStatePtr getGlobalState(void) const
+				{
+					assert(!globalStates.empty() && "Stack underflow");
+					return globalStates.top();
+				}
+
+				void update(Args... args)
+				{
+					getGlobalState()->execute(owner, args...);
+					getCurrentState()->execute(owner, args...);
+				}
+
+				void changeState(StatePtr newState)
+				{
+					assert(newState && "Invalid state");
+					getCurrentState()->exit(owner);
 					states.pop();
+					states.push(newState);
+					getCurrentState()->enter(owner);
 				}
-				getCurrentState()->enter(owner);
-			}
 
-			void revertToPreviousGlobalState(std::size_t depth = 1)
-			{
-				assert(depth < globalStates.size() && "Stack underflow");
-				getGlobalState()->exit(owner);
-				for (std::size_t i = 0; i < depth; ++i)
+				template <typename State, typename... StateArgs>
+				void changeState(StateArgs &&...args)
 				{
-					globalStates.pop();
+					changeState(std::make_shared<State>(std::forward<StateArgs>(args)...));
 				}
-				getGlobalState()->enter(owner);
-			}
 
-			std::size_t numberOfStates(void) const
-			{
-				return states.size();
-			}
+				void changeGlobalState(StatePtr newState)
+				{
+					assert(newState && "Invalid state");
+					getGlobalState()->exit(owner);
+					globalStates.pop();
+					globalStates.push(newState);
+					getGlobalState()->enter(owner);
+				}
 
-			std::size_t numberOfGlobalStates(void) const
-			{
-				return globalStates.size();
-			}
+				template <typename State, typename... StateArgs>
+				void changeGlobalState(StateArgs &&...args)
+				{
+					changeGlobalState(std::make_shared<State>(std::forward<StateArgs>(args)...));
+				}
 
-			bool isInState(ConstStatePtr state) const
-			{
-				assert(state && "Invalid state");
-				return typeid(*getCurrentState().get()) == typeid(*state.get());
-			}
+				void addState(StatePtr newState)
+				{
+					assert(newState && "Invalid state");
+					getCurrentState()->exit(owner);
+					states.push(newState);
+					getCurrentState()->enter(owner);
+				}
 
-			bool isInGlobalState(ConstStatePtr state) const
-			{
-				assert(state && "Invalid state");
-				return typeid(*getGlobalState().get()) == typeid(*state.get());
-			}
+				template <typename State, typename... StateArgs>
+				void addState(StateArgs &&...args)
+				{
+					addState(std::make_shared<State>(std::forward<StateArgs>(args)...));
+				}
 
-			template <class State>
-			bool isInState(void) const
-			{
-				return typeid(*getCurrentState().get()) == typeid(State);
-			}
+				void addGlobalState(StatePtr newState)
+				{
+					assert(newState && "Invalid state");
+					getGlobalState()->exit(owner);
+					globalStates.push(newState);
+					getGlobalState()->enter(owner);
+				}
 
-			template <class State>
-			bool isInGlobalState(void) const
-			{
-				return typeid(*getGlobalState().get()) == typeid(State);
-			}
-		};
+				template <typename State, typename... StateArgs>
+				void addGlobalState(StateArgs &&...args)
+				{
+					addGlobalState(std::make_shared<State>(std::forward<StateArgs>(args)...));
+				}
+
+				void revertToPreviousState(std::size_t depth = 1)
+				{
+					assert(depth < states.size() && "Stack underflow");
+					getCurrentState()->exit(owner);
+					for (std::size_t i = 0; i < depth; ++i)
+					{
+						states.pop();
+					}
+					getCurrentState()->enter(owner);
+				}
+
+				void revertToPreviousGlobalState(std::size_t depth = 1)
+				{
+					assert(depth < globalStates.size() && "Stack underflow");
+					getGlobalState()->exit(owner);
+					for (std::size_t i = 0; i < depth; ++i)
+					{
+						globalStates.pop();
+					}
+					getGlobalState()->enter(owner);
+				}
+
+				std::size_t numberOfStates(void) const
+				{
+					return states.size();
+				}
+
+				std::size_t numberOfGlobalStates(void) const
+				{
+					return globalStates.size();
+				}
+
+				bool isInState(ConstStatePtr state) const
+				{
+					assert(state && "Invalid state");
+					return typeid(*getCurrentState().get()) == typeid(*state.get());
+				}
+
+				bool isInGlobalState(ConstStatePtr state) const
+				{
+					assert(state && "Invalid state");
+					return typeid(*getGlobalState().get()) == typeid(*state.get());
+				}
+
+				template <class State>
+				bool isInState(void) const
+				{
+					return typeid(*getCurrentState().get()) == typeid(State);
+				}
+
+				template <class State>
+				bool isInGlobalState(void) const
+				{
+					return typeid(*getGlobalState().get()) == typeid(State);
+				}
+			};
+		}
 	}
 }
