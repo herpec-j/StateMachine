@@ -21,13 +21,13 @@ namespace AO
 
 				using EntityPtr = EntityType *;
 
-				using ConstEntityPtr = const EntityPtr;
+				using ConstEntityPtr = EntityPtr const;
 
 				using StateType = State < EntityType, Args... >;
 
 				using StatePtr = std::shared_ptr<StateType>;
 
-				using ConstStatePtr = std::shared_ptr <const StateType>;
+				using ConstStatePtr = std::shared_ptr <StateType const>;
 
 				using EmptyState = Private::EmptyState<Entity, Args...>;
 
@@ -51,10 +51,14 @@ namespace AO
 					globalStates.push(EmptyState::GetInstance());
 				}
 
-				StateMachine(const StateMachine &) = delete;
+				StateMachine(StateMachine const &) = delete;
+
+				StateMachine(StateMachine &&) = default;
 
 				// Assignment operators
-				StateMachine &operator=(const StateMachine &) = delete;
+				StateMachine &operator=(StateMachine const &) = delete;
+
+				StateMachine &operator=(StateMachine &&) = default;
 
 				// Destructor
 				virtual ~StateMachine(void) = default;

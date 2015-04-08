@@ -30,10 +30,14 @@ namespace AO
 					// Constructors
 					EmptyState(void) = default;
 
-					EmptyState(const EmptyState &) = default;
+					EmptyState(EmptyState const &) = default;
+
+					EmptyState(EmptyState &&) = default;
 
 					// Assignment operators
-					EmptyState &operator=(const EmptyState &) = default;
+					EmptyState &operator=(EmptyState const &) = default;
+
+					EmptyState &operator=(EmptyState &&) = default;
 
 					// Inherited Methods
 					void enter(EntityPtr entity) override final

@@ -36,10 +36,14 @@ namespace AO
 					// Constructors
 					Singleton(void) = default;
 
-					Singleton(const Singleton &) = default;
+					Singleton(Singleton const &) = default;
+
+					Singleton(Singleton &&) = default;
 
 					// Assignment operators
-					Singleton &operator=(const Singleton &) = default;
+					Singleton &operator=(Singleton const &) = default;
+
+					Singleton &operator=(Singleton &&) = default;
 
 					// Destructor
 					virtual ~Singleton(void) = default;

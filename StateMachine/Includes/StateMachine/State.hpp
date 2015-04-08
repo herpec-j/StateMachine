@@ -19,21 +19,25 @@ namespace AO
 
 				using EntityPtr = EntityType *;
 
-				using ConstEntityPtr = const EntityPtr;
+				using ConstEntityPtr = EntityPtr const;
 
 				// Constructors
 				State(void) = default;
 
-				State(const State &) = delete;
+				State(State const &) = delete;
+
+				State(State &&) = default;
 
 				// Assignment operators
-				State &operator=(const State &) = delete;
+				State &operator=(State const &) = delete;
+
+				State &operator=(State &&) = default;
 
 				// Destructor
 				virtual ~State(void) = default;
 
 			protected:
-				// Methods
+				// Virtual Methods
 				virtual void enter(EntityPtr entity) = 0;
 
 				virtual void execute(EntityPtr entity, Args... args) = 0;
